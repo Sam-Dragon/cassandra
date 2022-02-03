@@ -1,0 +1,267 @@
+## CQL
+
+help;
+help TOPIC; --> help AGGREGATES;
+
+## Keyspaces [namespace for cluster]
+
+# Get 
+describe keyspaces;
+describe KEYSPACE;
+
+# Create
+create keyspace KEYSPACE
+with replication = {'class': ‘strategy name’, 'replication_factor' : ‘no.of  replicas’}; --> durable_writes is default to true
+
+create keyspace KEYSPACE
+with replication = { 'class' : ‘strategy name’, 'datacenter1' : ‘no.of  replicas’ }
+and durable_writes = false;
+
+# Verify DURABLE_WRITES
+select * from system_schema.keyspaces;
+
+# Using a Keyspace [Go to specific keyspace]
+use KEYSPACE;
+
+# Alter
+alter keyspace KEYSPACE
+with replication = {'class': ‘strategy name’, 'replication_factor' : ‘no.of  replicas’} and durable_writes = BOOLEAN;
+
+# Drop
+drop keyspace KEYSPACE
+
+#################################### EXAMPLE ############################################
+describe keyspaces;
+
+create keyspace durablitykeyspacetrue
+with replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+
+describe durablitykeyspacetrue;
+
+use durablitykeyspacetrue;
+
+alter keyspace durablitykeyspacetrue
+with replication = {'class': 'NetworkTopologyStrategy', 'datacenter1' : 2} and durable_writes = false;
+
+select * from system_schema.keyspaces;
+select * from system_schema.keyspaces where keyspace_name='durablitykeyspacetrue';
+
+drop keyspace durablitykeyspacetrue
+
+##########################################################################################
+
+
+## Tables [Entity for cluster]
+
+# Get 
+describe tables;
+describe TABLE;
+select * from emp;
+
+# Create
+create (table | columnfamily) <tablename>
+('<column-definition>' , '<column-definition>')
+(with <option> and <option>)
+
+# Update
+
+alter (table | columnfamily) <tablename> <instruction>
+
+# Drop
+
+drop table <tablename>
+
+# Truncate
+
+truncate table <tablename>
+
+#################################### EXAMPLE ############################################
+
+describe tables;
+
+create table emp(
+   emp_id int primary key,
+   emp_name text,
+   emp_city text,
+   emp_sal varint,
+   emp_phone varint
+   );
+
+insert into emp (emp_id, emp_name, emp_city,
+   emp_phone, emp_sal) values(1,'ram', 'hyderabad', 9848022338, 50000);
+
+insert into emp (emp_id, emp_name,
+   emp_phone, emp_sal) values(2,'robin', 9848022339, 40000); --- emp_city is not sent
+
+insert into emp (emp_id, emp_name, emp_city,
+   emp_phone) values(3,'rahman', 'chennai', 9848022330); --- emp_sal is not sent
+
+insert into emp (emp_id, emp_name, emp_city,
+   emp_phone, emp_age) values(3,'rahman', 'chennai', 9848022330, 45); --- emp_age added [WONT WORK..!!!]
+
+
+truncate table emp;
+
+describe emp;
+
+alter table emp add emp_state text;
+
+select * from emp;
+
+alter table emp drop emp_state;
+
+create table std(
+   id int primary key,
+   name text
+   );
+
+select * from std;
+
+drop table std;
+
+#########################################################################################
+
+
+## INDEX [Column Indexing]
+
+# Get 
+
+describe TABLE
+
+# Create
+
+CREATE INDEX <identifier> ON <tablename>
+
+# Drop
+
+drop index <identifier>
+
+#################################### EXAMPLE ############################################
+
+create index name_index on emp (emp_name);
+
+describe emp;
+
+drop index name_index;
+
+#########################################################################################
+
+
+## BATCH
+
+BEGIN BATCH
+<insert-stmt>/ <update-stmt>/ <delete-stmt>
+APPLY BATCH
+
+#################################### EXAMPLE ############################################
+
+BEGIN BATCH
+INSERT INTO emp (emp_id, emp_city, emp_name, emp_phone, emp_sal) values(4,'Pune','rajeev',9848022331, 30000);
+UPDATE emp SET emp_sal = 50000 WHERE emp_id =3;
+DELETE emp_city FROM emp WHERE emp_id = 2;
+APPLY BATCH;
+
+#########################################################################################
+
+
+######################################## DML ############################################
+
+## QUERY
+select [columns..] from <tablename>
+
+Note − A WHERE clause can be used only on the columns that are a part of primary key or have a secondary index on them.
+SELECT FROM <table name> WHERE <condition>;
+
+## INSERT
+
+insert into <tablename>
+(<column1 name>, <column2 name>....)
+values (<value1>, <value2>....)
+using <option>
+
+## UPDATE
+
+update <tablename>
+set <column name> = <new value>
+<column name> = <value>....
+where <condition>
+
+## DELETE
+
+# DELETE SINGLE COLUMN
+delete <COLUMN> from <identifier> where <condition>;
+
+# DELETE ROW
+delete from <identifier> where <condition>;
+
+#################################### EXAMPLE ############################################
+
+select * from emp;
+
+insert into emp (emp_id, emp_name, emp_city,
+   emp_phone, emp_sal) values(5,'ram', 'hyderabad', 9848022338, 50000);
+
+select * from emp where emp_name = 'ram'; --- emp_name is index column
+
+update emp set emp_city='delhi',emp_sal=50000 where emp_id=2;
+
+select * from emp where id = 2;
+
+delete emp_sal from emp where emp_id=3;
+
+delete from emp where emp_id=5;
+
+select * from emp;
+
+############################################################################################
+
+
+## USER DEFINED DATATYPE
+
+# DESCRIBE
+
+describe types 
+describe type TYPE
+
+# CREATE 
+
+create type [if not exists] 
+keyspace_name.TYPE(
+field_name cql_datatype[,] 
+[field_name cql_datatype] [,...]
+)
+
+ALTER
+alter type TYPE rename old_field_name to new_field_name
+alter type TYPE add field_name cql_datatype 
+
+DROP
+drop type TYPE;
+
+#################################### EXAMPLE ############################################
+
+CREATE TYPE main.profile (
+  name text,	
+  weight text,
+  height text
+);
+
+create table main.user (
+	id uuid PRIMARY KEY,
+	profile frozen <profile>
+);
+
+insert into user(id, profile) values (62c36092-82a1-3a00-93d1-46196ee77204,{name: 'Sam', weight: '80 lbs', height: '5F 7I'});
+
+alter TYPE profile RENAME name TO FullName;
+alter TYPE profile ADD age int;
+
+drop type TYPE;
+
+############################################################################################
+
+
+## COLLECTION DATATYPE
+
+# CREATE
+create table data(name text primary key, email list<text>);
