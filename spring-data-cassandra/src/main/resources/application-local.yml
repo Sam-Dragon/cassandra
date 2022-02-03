@@ -1,0 +1,12 @@
+server:
+  port: 2000
+  
+spring:
+  data:
+    cassandra:
+      port: 9042
+      keyspace-name: main
+      local-datacenter: datacenter1
+      schema-action: create-if-not-exists
+      contact-points:
+      - mycassandra
