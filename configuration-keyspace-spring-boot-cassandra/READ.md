@@ -1,5 +1,3 @@
-# Pending
-
 # Docker Database Setup
 
 ======================= DOCKER DATABSE =======================

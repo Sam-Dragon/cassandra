@@ -1,4 +1,4 @@
-# Local Database Connection
+# Docker Database Connection
 
 # Steps
 
@@ -28,7 +28,7 @@
 - Next, run the following command to get into the database <br>
 <b> docker exec -it 80eccd74c3d1  cqlsh </b>
 <br><br>
-- Verify the database content with api
+- Verify the database content w.r.t api
 
 # Learning: 
 - For database <br>
