@@ -1,0 +1,20 @@
+spring:
+  data:
+    cassandra:
+      port: 9041
+      keyspace-name: docker_keyspace
+      schema-action: CREATE_IF_NOT_EXISTS
+      local-datacenter: datacenter1
+      contact-points: 
+      - host.docker.internal
+      consistency-level: ALL
+      serial-consistency-level: quorum
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          cassandra:
+            core:
+              cql: INFO
