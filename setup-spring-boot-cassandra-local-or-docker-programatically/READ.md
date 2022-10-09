@@ -46,6 +46,14 @@
 5. This ensures the database connection is working with docker & local database
 <br><br>
 
+# Docker Database Commands [CQLSH]
+- Run the command & pick the container id <br>
+<b> docker ps </b>
+<br><br>
+- Next, run the following command to get into the database <br>
+<b> docker exec -it 80eccd74c3d1  cqlsh </b>
+- Verify the database content with api
+
 # Learning: 
 - Look at CassandraConfig.java file where we setup the configuration programmatically
 
