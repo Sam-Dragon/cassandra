@@ -1,0 +1,9 @@
+spring:
+  data:
+    cassandra:
+      port: 9041
+      keyspace-name: docker_keyspace 
+      schema-action: create-if-not-exists
+      local-datacenter: datacenter1
+      contact-points:
+      - host.docker.internal
