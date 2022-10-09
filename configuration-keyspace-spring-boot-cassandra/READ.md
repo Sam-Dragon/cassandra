@@ -1,4 +1,4 @@
-# Docker Database Setup
+# Keyspace, Table via Configuration
 
 ======================= DOCKER DATABSE =======================
 1. Installation of Cassandra using docker. Run the commands mentioned below <br>
